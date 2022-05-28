@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+	"resolveJsonModule": true,
+    "esModuleInterop": true,
+    "outDir": "build",
+    "module": "commonjs",
+    "strict": true,
+    "target": "es6"
+  },
+  "include": ["src/"]
+}

@@ -1,0 +1,1202 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Meemo API docs",
+    "description": "Meemo API docs",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/",
+      "description": "Local Dev, or from Heroku"
+    },
+    {
+      "url": "/api/",
+      "description": "With docker-compose and nginx proxy"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "API for users in the system"
+    },
+    {
+      "name": "NFT",
+      "description": "API for NFT processing"
+    },
+    {
+      "name": "Authenication",
+      "description": "API for authenticate public address"
+    },
+    {
+      "name": "Home",
+      "description": "API for Home Page"
+    },
+    {
+      "name": "Tags",
+      "description": "API for Tags"
+    },
+    {
+      "name": "Journal",
+      "description": "API for Journal"
+    },
+    {
+      "name": "Mood",
+      "description": "API for mood"
+    }
+  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/nft": {
+      "post": {
+        "summary": "Verify publicAddress has Meemos's NFT",
+        "tags": ["NFT"],
+        "requestBody": {
+          "description": "Public Address",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/publicAddress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/auth": {
+      "post": {
+        "summary": "Verify publicAddress has Meemos's NFT",
+        "tags": ["Authenication"],
+        "requestBody": {
+          "description": "Public Address & Signature",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/authBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "summary": "Logout",
+        "tags": ["Authenication"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                },
+                "example": {
+                  "message": "Logout successfull"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/auth/refresh-token": {
+      "post": {
+        "summary": "Get new token from refresh token when token expired",
+        "tags": ["Authenication"],
+        "requestBody": {
+          "description": "refreshToken",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/refreshToken"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/journal": {
+      "get": {
+        "parameters": [],
+        "tags": ["Journal"],
+        "summary": "Get all journal of user by userId and time and tags_id",
+        "responses": {
+          "200": {
+            "description": "OK",
+
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Tags"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "500": {
+            "description": "Failed. Internal Server Error"
+          }
+        }
+      }
+    },
+    "/tags": {
+      "get": {
+        "parameters": [],
+        "tags": ["Tags"],
+        "summary": "Get all tags of user by userId",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Tags"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "500": {
+            "description": "Failed. Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "parameters": [
+          {
+            "name": "publicAddress",
+            "in": "query",
+            "required": true,
+            "description": "publicAddress of the user that we want to match",
+            "type": "string"
+          }
+        ],
+        "tags": ["Users"],
+        "summary": "Get user info, Create new if it is not existed",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "500": {
+            "description": "Failed. Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Delete user account and data relate",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                },
+                "example": {
+                  "message": "Delete successfull"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "500": {
+            "description": "Failed. Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user profile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                },
+                "example": {
+                  "uidTemps": [
+                    "v3Apzgc7GLTddL8u5KFDFaxQFag1",
+                    "XteArAwyLKYD2TPQicTAqoObptp2"
+                  ],
+                  "fire": 0,
+                  "gem": 20,
+                  "level": 1,
+                  "isHasMeemosNFT": true,
+                  "expRequire": 184,
+                  "moods": [
+                    {
+                      "index": 0,
+                      "id": "9de789fa-1e8f-4c33-b056-f497cadc742b",
+                      "color": "FF7379",
+                      "name": "Very bad",
+                      "icon": "icAngry"
+                    },
+                    {
+                      "index": 1,
+                      "color": "F688C1",
+                      "id": "c70ac787-c978-4e52-8b60-907d3d39e0cc",
+                      "name": "Bad",
+                      "icon": "icSad"
+                    },
+                    {
+                      "name": "Okay",
+                      "icon": "icBored",
+                      "id": "f7fc2e3a-bd29-4ab2-85b7-c41c41792052",
+                      "index": 2,
+                      "color": "F0C164"
+                    },
+                    {
+                      "name": "Good",
+                      "id": "813dca74-4978-413d-bd79-d6b4440c588d",
+                      "icon": "icExcited",
+                      "index": 3,
+                      "color": "5AE391"
+                    },
+                    {
+                      "index": 4,
+                      "color": "38C8FF",
+                      "id": "3d851d93-e46c-43b5-ad1b-d2de9f1c6102",
+                      "name": "Very good",
+                      "icon": "icHappy"
+                    }
+                  ],
+                  "exp": 20,
+                  "nonce": 54090,
+                  "publicAddress": "0xbf57023c760c8d05cdf1b6e1d445607b78cefe64",
+                  "avatar": "https://lh3.googleusercontent.com/QUCFqopXBoRqcZ7SBdr_jzL33MHWreO1KXZ9Rhr3NsTh8scYsV6z-_KS6LKcNs5EfPdbU1gW1YwhVKKoCJQI7MptfEltt8v3cQ322w",
+                  "id": "0xbf57023c760c8d05cdf1b6e1d445607b78cefe64",
+                  "tags": [
+                    {
+                      "content": "Pleasure",
+                      "icon": "icHappy",
+                      "id": "221622e3-665f-474b-b3f7-637380338d9f",
+                      "color": "FF7379"
+                    },
+                    {
+                      "content": "Accomplishment",
+                      "icon": "icExcited",
+                      "color": "7EDBFE",
+                      "id": "6506a1e6-f0d7-4550-84f7-60e24edcc0b7"
+                    }
+                  ],
+                  "stage": "EGG"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found!"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user profile",
+        "tags": ["Users"],
+        "requestBody": {
+          "description": "User Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/UserProfile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                },
+                "example": {
+                  "message": "update successfull"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/users/pet/patting": {
+      "post": {
+        "summary": "Update user profile",
+        "tags": ["Users"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                },
+                "example": {
+                  "level": 1,
+                  "exp": 0,
+                  "stage": "EGG",
+                  "expRequire": 184,
+                  "gem": 20,
+                  "expAdded": 10,
+                  "isLevelUp": true,
+                  "numberActionToday": 4,
+                  "maxAction": 10,
+                  "user": {
+                    "level": 1,
+                    "expRequire": 184,
+                    "uidTemps": ["v3Apzgc7GLTddL8u5KFDFaxQFag1"],
+                    "gem": 20,
+                    "stage": "EGG",
+                    "nonce": 54090,
+                    "avatar": "https://lh3.googleusercontent.com/QUCFqopXBoRqcZ7SBdr_jzL33MHWreO1KXZ9Rhr3NsTh8scYsV6z-_KS6LKcNs5EfPdbU1gW1YwhVKKoCJQI7MptfEltt8v3cQ322w",
+                    "moods": [
+                      {
+                        "id": "9de789fa-1e8f-4c33-b056-f497cadc742b",
+                        "index": 0,
+                        "name": "Very bad",
+                        "icon": "icAngry",
+                        "color": "FF7379"
+                      },
+                      {
+                        "id": "c70ac787-c978-4e52-8b60-907d3d39e0cc",
+                        "index": 1,
+                        "name": "Bad",
+                        "icon": "icSad",
+                        "color": "F688C1"
+                      },
+                      {
+                        "name": "Okay",
+                        "icon": "icBored",
+                        "index": 2,
+                        "id": "f7fc2e3a-bd29-4ab2-85b7-c41c41792052",
+                        "color": "F0C164"
+                      },
+                      {
+                        "name": "Good",
+                        "color": "5AE391",
+                        "id": "813dca74-4978-413d-bd79-d6b4440c588d",
+                        "icon": "icExcited",
+                        "index": 3
+                      },
+                      {
+                        "color": "38C8FF",
+                        "id": "3d851d93-e46c-43b5-ad1b-d2de9f1c6102",
+                        "name": "Very good",
+                        "icon": "icHappy",
+                        "index": 4
+                      }
+                    ],
+                    "publicAddress": "0xbf57023c760c8d05cdf1b6e1d445607b78cefe64",
+                    "id": "0xbf57023c760c8d05cdf1b6e1d445607b78cefe64",
+                    "exp": 0,
+                    "tags": [
+                      {
+                        "icon": "icHappy",
+                        "content": "Pleasure",
+                        "id": "221622e3-665f-474b-b3f7-637380338d9f",
+                        "color": "FF7379"
+                      },
+                      {
+                        "color": "7EDBFE",
+                        "icon": "icExcited",
+                        "id": "6506a1e6-f0d7-4550-84f7-60e24edcc0b7",
+                        "content": "Accomplishment"
+                      }
+                    ],
+                    "isHasMeemosNFT": true,
+                    "fire": 0
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/users/profile/pet-name": {
+      "put": {
+        "summary": "Update user pet name",
+        "tags": ["Users"],
+        "requestBody": {
+          "description": "User Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/UserPetName"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                },
+                "example": {
+                  "message": "update successfull"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/moods/question": {
+      "get": {
+        "summary": "Get question mood feeling",
+        "tags": ["Mood"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/moodQuestion"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/moods": {
+      "get": {
+        "summary": "Get list mood (default 4)",
+        "tags": ["Mood"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/mood"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      },
+      "post": {
+        "summary": "Create/update mood ",
+        "tags": ["Mood"],
+        "requestBody": {
+          "required": true,
+          "description": "Required has (*)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/moodInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/mood"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+
+    "/moods/feeling": {
+      "get": {
+        "summary": "get mood feeling today",
+        "tags": ["Mood"],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "description": "yyyy-mm-dd"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/moodFeelingOveriew"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      },
+      "post": {
+        "summary": "Add/update mood feeling",
+        "tags": ["Mood"],
+        "requestBody": {
+          "required": true,
+          "description": "Required has (*)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/moodFeelingInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/moodFeeling"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/moods/overview": {
+      "get": {
+        "summary": "Get all history mood in year",
+        "tags": ["Mood"],
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "description": "year. dafault: now year"
+          },
+          {
+            "name": "moodIds",
+            "in": "path",
+            "required": true,
+            "description": "list id of mood separate by comma. Example moodIds=sdfs23df,e23wewer,we123we"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/moodFeelingOveriew"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/users/{id}/activities": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID of the user that we want to match",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user's activities with given ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "User with id",
+            "schema": {
+              "$ref": "#/definitions/id"
+            }
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "required": false,
+            "description": "Time to query (YYYY-MM)",
+            "schema": {
+              "$ref": "#/definitions/time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found!"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add new user activity",
+        "tags": ["Users"],
+        "requestBody": {
+          "description": "Activity Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Activity"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id of user want to be add activity",
+            "schema": {
+              "$ref": "#/definitions/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "404": {
+            "description": "Failed. User not found."
+          }
+        }
+      }
+    },
+    "/intro": {
+      "get": {
+        "tags": ["Home"],
+        "summary": "Get Intro data",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "500": {
+            "description": "Failed. Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "id": {
+      "properties": {
+        "uuid": {
+          "type": "string"
+        }
+      }
+    },
+    "time": {
+      "properties": {
+        "time": {
+          "type": "string"
+        }
+      }
+    },
+    "name": {
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "publicAddress": {
+      "properties": {
+        "publicAddress": {
+          "type": "string"
+        }
+      }
+    },
+    "authBody": {
+      "properties": {
+        "publicAddress": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        }
+      }
+    },
+    "refreshToken": {
+      "properties": {
+        "refreshToken": {
+          "type": "string"
+        }
+      }
+    },
+    "UserToken": {
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "expiresIn": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        }
+      }
+    },
+    "Activity": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number"
+        },
+        "tagTitle": {
+          "type": "string"
+        },
+        "index": {
+          "type": "number"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nonce": {
+          "type": "number"
+        },
+        "publicAddress": {
+          "type": "string"
+        },
+        "lastModifiedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "updated at",
+          "required": true
+        }
+      }
+    },
+    "UserProfile": {
+      "type": "object",
+      "properties": {
+        "gender": {
+          "type": "string"
+        },
+        "ageRange": {
+          "type": "string"
+        }
+      }
+    },
+    "UserPetName": {
+      "type": "object",
+      "properties": {
+        "petName": {
+          "type": "string"
+        }
+      }
+    },
+    "Users": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/User"
+          },
+          "lastModifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "updated at",
+            "required": true
+          }
+        }
+      }
+    },
+    "Journal": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "tagId": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number"
+        },
+        "lastModifiedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "updated at",
+          "required": true
+        }
+      }
+    },
+    "moodQuestion": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "question": "How are you feeling today?"
+      }
+    },
+    "mood": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "color": {
+          "type": "number",
+          "required": true
+        },
+        "icon": {
+          "type": "string",
+          "required": true
+        },
+        "index": {
+          "type": "number",
+          "required": true,
+          "description": "sort theo index"
+        },
+        "lastModifiedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "updated at",
+          "required": true
+        }
+      }
+    },
+    "moodInput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name(*)": {
+          "type": "string"
+        },
+        "color(*)": {
+          "type": "string"
+        },
+        "icon(*)": {
+          "type": "string"
+        },
+        "index(*)": {
+          "type": "number",
+          "description": "sort theo index"
+        },
+        "lastModifiedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "updated at",
+          "required": true
+        }
+      }
+    },
+    "moodFeeling": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "point": {
+          "type": "number",
+          "required": true
+        },
+        "moodId": {
+          "type": "string",
+          "required": true
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "required": true
+        },
+        "lastModifiedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "updated at",
+          "required": true
+        }
+      }
+    },
+    "moodFeelingInput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "point(*)": {
+          "type": "number",
+          "required": true
+        },
+        "moodId(*)": {
+          "type": "string",
+          "required": true
+        },
+        "lastModifiedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "updated at",
+          "required": true
+        }
+      }
+    },
+    "moodFeelingOveriew": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "point": {
+              "type": "number",
+              "required": true
+            },
+            "moodId": {
+              "type": "string",
+              "required": true
+            },
+            "lastModifiedDate": {
+              "type": "string",
+              "format": "date-time",
+              "description": "updated at",
+              "required": true
+            }
+          }
+        }
+      },
+      "example": [
+        {
+          "date": "2022-03-23",
+          "data": [
+            {
+              "moodId": "aecf0e27-a60a-48e2-91dd-65f0e8522148",
+              "id": "HolymkXbtOY7Le1acsyG",
+              "point": 1,
+              "userId": "0r4vCr3NxnIMUbfCwdDe",
+              "date": "2022-03-23",
+              "lastModifiedDate": "2022-04-06T04:59:48.419Z"
+            }
+          ]
+        },
+        {
+          "date": "2022-03-25",
+          "data": [
+            {
+              "userId": "0r4vCr3NxnIMUbfCwdDe",
+              "date": "2022-03-25",
+              "moodId": "aecf0e27-a60a-48e2-91dd-65f0e8522148",
+              "point": 2,
+              "id": "XQfEMiVYS5NBmXQV667K",
+              "lastModifiedDate": "2022-04-06T04:59:48.419Z"
+            },
+            {
+              "moodId": "aecf0e27-a60a-48e2-91dd-65f0e8522148",
+              "userId": "0r4vCr3NxnIMUbfCwdDe",
+              "id": "p9nOfAuOfxWOgyencyFH",
+              "point": 3,
+              "date": "2022-03-25",
+              "lastModifiedDate": "2022-04-06T04:59:48.419Z"
+            }
+          ]
+        },
+        {
+          "date": "2022-03-26",
+          "data": [
+            {
+              "date": "2022-03-26",
+              "point": 2,
+              "userId": "0r4vCr3NxnIMUbfCwdDe",
+              "moodId": "aecf0e27-a60a-48e2-91dd-65f0e8522148",
+              "id": "wlYc8116ttos14ZsGSKf",
+              "lastModifiedDate": "2022-04-06T04:59:48.419Z"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

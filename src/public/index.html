@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Test Socket Client</h1>
+    <ul id="adress"></ul>
+    <form action="" id="addressForm">
+      <input type="text" id="publicAddress" />
+      <button id="sendAddress">Send Address</button>
+    </form>
+  </body>
+
+  <script
+    src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+    integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    const socket = io();
+    socket.on("0xbe37e0aa84bbca314ca362ec421468b5dc706d34", (message) => {
+      console.log("Message: ", message);
+    });
+  </script>
+</html>
