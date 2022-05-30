@@ -118,7 +118,7 @@ export const setAvatar = async (
 ) => {
   try {
     const userId = <string>req.headers.userId;
-    const avatar = <string>req.headers.avatar;
+    const { avatar } = req.body;
     if (userId && userId != "" && avatar && avatar != "") {
       await updateUserAvatar(userId.toLowerCase(), avatar);
       return res.json({ message: "avatar successfully updated" });
